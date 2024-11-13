@@ -15,17 +15,18 @@ export default async function AuthLayout({
 
   return (
     <div className="flex">
-      <Image
-        src="/agendou-logo-black.png"
-        alt="Logo"
-        width={800}
-        height={800}
-        quality={1}
-        priority={true}
-        className="absolute left-5 top-5 z-10 w-32"
-      />
-      <div className="hidden flex-1 border-r bg-zinc-100 p-4 sm:block"></div>
-      <main className="flex-1">{children}</main>
+      <div className="hidden flex-1 items-center justify-center border-r bg-zinc-50 sm:flex">
+        <Image
+          src="/auth-illustration.svg"
+          alt="Illustration"
+          width={800}
+          height={800}
+          quality={1}
+          priority={true}
+          className="w-[55%] pb-1"
+        />
+      </div>
+      <main className="min-h-screen flex-1">{children}</main>
     </div>
   )
 }
