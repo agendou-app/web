@@ -1,0 +1,33 @@
+{
+  "pages": {
+    "auth": {
+      "sign_in": {
+        "title": "Entrar",
+        "subtitle": "Digite seu e-mail abaixo para acessar sua conta",
+        "form": {
+          "fields": {
+            "email": {
+              "label": "E-mail",
+              "validation": {
+                "valid_email": "Digite um e-mail válido"
+              }
+            },
+            "password": {
+              "label": "Senha",
+              "validation": {
+                "at_least_6_characteres": "Digite uma senha com pelo menos 6 caracteres."
+              }
+            }
+          },
+          "buttons": {
+            "submit": "Entrar"
+          },
+          "footer": {
+            "dont_have_account": "Não tem uma conta?",
+            "sign_up": "Cadastre-se"
+          }
+        }
+      }
+    }
+  }
+}

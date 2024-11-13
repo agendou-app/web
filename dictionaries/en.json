@@ -1,0 +1,33 @@
+{
+  "pages": {
+    "auth": {
+      "sign_in": {
+        "title": "Login",
+        "subtitle": "Enter your email below to access your account",
+        "form": {
+          "fields": {
+            "email": {
+              "label": "Email",
+              "validation": {
+                "valid_email": "Enter a valid email"
+              }
+            },
+            "password": {
+              "label": "Password",
+              "validation": {
+                "at_least_6_characteres": "Enter a password with at least 6 characters."
+              }
+            }
+          },
+          "buttons": {
+            "submit": "Login"
+          },
+          "footer": {
+            "dont_have_account": "Don't have an account?",
+            "sign_up": "Sign up"
+          }
+        }
+      }
+    }
+  }
+}
