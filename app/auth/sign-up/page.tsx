@@ -1,4 +1,4 @@
-import { SignUpForm } from '@/components/sign-up-form'
+import { SignUpForm } from './sign-up-form'
 import { Button } from '@/components/ui/button'
 import { EnterIcon } from '@radix-ui/react-icons'
 import Link from 'next/link'

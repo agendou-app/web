@@ -1,5 +1,8 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+import SignInFormSchema from '@/schemas/sign-in'
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -29,12 +32,10 @@ import { signIn } from 'next-auth/react'
 import { SymbolIcon } from '@radix-ui/react-icons'
 import { useToast } from '@/hooks/use-toast'
 
-const formSchema = zod.object({
-  email: zod.string().email('Digite um e-mail válido'),
-  password: zod.string().min(6, 'Digite uma senha'),
-})
-
 export function SignInForm() {
+  const t = useTranslations('pages.auth.sign_in')
+  const formSchema = SignInFormSchema(t)
+
   const { toast } = useToast()
   const router = useRouter()
 
@@ -74,10 +75,8 @@ export function SignInForm() {
   return (
     <Card className="mx-auto max-w-sm border-none shadow-none">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
+        <CardTitle className="text-2xl">{t('title')}</CardTitle>
+        <CardDescription>{t('subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -89,7 +88,7 @@ export function SignInForm() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t('form.fields.email.label')}</FormLabel>
                       <FormControl>
                         <Input placeholder="m@example.com" {...field} />
                       </FormControl>
@@ -104,7 +103,7 @@ export function SignInForm() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t('form.fields.password.label')}</FormLabel>
                       <FormControl>
                         <Input type="password" {...field} />
                       </FormControl>
@@ -115,16 +114,16 @@ export function SignInForm() {
               </div>
               <Button disabled={isLoading} type="submit" className="w-full">
                 {!isLoading ? (
-                  <span>Login</span>
+                  <span>{t('form.buttons.submit')}</span>
                 ) : (
                   <SymbolIcon className="animate-spin" />
                 )}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{' '}
+              {t('form.footer.dont_have_account')}{' '}
               <Link href="sign-up" className="underline">
-                Sign up
+                {t('form.footer.sign_up')}
               </Link>
             </div>
           </form>

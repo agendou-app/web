@@ -1,5 +1,8 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
+import SignUpFormSchema from '@/schemas/sign-up'
+
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -33,26 +36,10 @@ import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 
-const formSchema = zod
-  .object({
-    name: zod
-      .string()
-      .min(2, 'O nome deve ter pelo menos 3 caracteres')
-      .max(50, 'O nome deve ter no máximo 50 caracteres')
-      .regex(
-        /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/,
-        'O nome deve conter apenas letras e espaços',
-      ),
-    email: zod.string().email('Email inválido'),
-    password: zod.string().min(6, 'A senha precisa ter no mínimo 6 caracteres'),
-    confirmPassword: zod.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'], // Indica que o erro está no campo confirmPassword
-    message: 'As senhas precisam ser iguais',
-  })
-
 export function SignUpForm() {
+  const t = useTranslations('pages.auth.sign_up')
+  const formSchema = SignUpFormSchema(t)
+
   const { toast } = useToast()
   const router = useRouter()
 
@@ -136,19 +123,13 @@ export function SignUpForm() {
   return (
     <Card className="mx-auto max-w-sm border-none shadow-none">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl">Create an account</CardTitle>
+        <CardTitle className="text-2xl">{t('title')}</CardTitle>
         <CardDescription>
-          {step === 'name' && (
-            <span>Enter your name below to create your account</span>
-          )}
+          {step === 'name' && <span>{t('form.subtitles.name')}</span>}
 
-          {step === 'email' && (
-            <span>Enter your email below to create your account</span>
-          )}
+          {step === 'email' && <span>{t('form.subtitles.email')}</span>}
 
-          {step === 'password' && (
-            <span>Enter your password below to create your account</span>
-          )}
+          {step === 'password' && <span>{t('form.subtitles.password')}</span>}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -166,14 +147,17 @@ export function SignUpForm() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Name" {...field} />
+                          <Input
+                            placeholder={t('form.fields.name.placeholder')}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <Button type="button" className="w-full" onClick={nextStep}>
-                    Next
+                    {t('form.buttons.next')}
                     <ArrowRightIcon />
                   </Button>
                 </>
@@ -187,7 +171,10 @@ export function SignUpForm() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="Email" {...field} />
+                          <Input
+                            placeholder={t('form.fields.email.placeholder')}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -196,10 +183,10 @@ export function SignUpForm() {
                   <div className="flex gap-4">
                     <Button type="button" variant="ghost" onClick={backStep}>
                       <ArrowLeft />
-                      Return
+                      {t('form.buttons.return')}
                     </Button>
                     <Button type="button" className="w-full" onClick={nextStep}>
-                      Next
+                      {t('form.buttons.next')}
                       <ArrowRightIcon />
                     </Button>
                   </div>
@@ -214,7 +201,9 @@ export function SignUpForm() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Password</FormLabel>
+                          <FormLabel>
+                            {t('form.fields.password.label')}
+                          </FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -227,7 +216,9 @@ export function SignUpForm() {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Confirm password</FormLabel>
+                          <FormLabel>
+                            {t('form.fields.confirm_password.label')}
+                          </FormLabel>
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
@@ -238,11 +229,11 @@ export function SignUpForm() {
                     <div className="flex gap-4">
                       <Button type="button" variant="ghost" onClick={backStep}>
                         <ArrowLeft />
-                        Return
+                        {t('form.buttons.return')}
                       </Button>
                       <Button type="submit" className="w-full">
                         {!isLoading ? (
-                          <span>Sign Up</span>
+                          <span>{t('form.buttons.sign_up')}</span>
                         ) : (
                           <SymbolIcon className="animate-spin" />
                         )}
@@ -253,13 +244,13 @@ export function SignUpForm() {
               )}
             </div>
             <div className="mt-4 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{' '}
+              {t('form.footer.you_agree')}{' '}
               <Link href="#" className="underline">
-                Terms of Service
+                {t('form.footer.terms_of_service')}
               </Link>{' '}
-              and{' '}
+              {t('form.footer.and')}{' '}
               <Link href="#" className="underline">
-                Privacy Policy
+                {t('form.footer.privacy_of_policy')}
               </Link>
               .
             </div>
