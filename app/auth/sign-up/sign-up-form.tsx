@@ -3,7 +3,6 @@
 import { useTranslations } from 'next-intl'
 import SignUpFormSchema from '@/schemas/sign-up'
 
-import { useState } from 'react'
 import Link from 'next/link'
 
 import { useForm } from 'react-hook-form'
@@ -30,21 +29,16 @@ import {
 
 import { ArrowRightIcon, SymbolIcon } from '@radix-ui/react-icons'
 import { ArrowLeft } from 'lucide-react'
-import { api } from '@/lib/axios'
-import { useToast } from '@/hooks/use-toast'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import { useSignUpSteps } from '@/hooks/use-sign-up-toasts'
+import useApiRequest from '@/hooks/use-api-request'
 
 export function SignUpForm() {
-  const t = useTranslations('pages.auth.sign_up')
-  const formSchema = SignUpFormSchema(t)
-
-  const { toast } = useToast()
   const router = useRouter()
 
-  const [step, setStep] = useState<'name' | 'email' | 'password'>('name')
-  const [isLoading, setIsLoading] = useState(false)
+  const t = useTranslations('pages.auth.sign_up')
+  const formSchema = SignUpFormSchema(t)
 
   const form = useForm<zod.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,11 +50,12 @@ export function SignUpForm() {
     },
   })
 
-  async function onSubmit(data: zod.infer<typeof formSchema>) {
-    setIsLoading(true)
+  const { step, nextStep, backStep, handleKeyDown } = useSignUpSteps(form)
+  const { isLoading, request } = useApiRequest<zod.infer<typeof formSchema>>()
 
+  const onSubmit = async (data: zod.infer<typeof formSchema>) => {
     try {
-      await api.post('/users', data)
+      await request('POST', '/users', data)
 
       await signIn('credentials', {
         email: data.email,
@@ -70,53 +65,7 @@ export function SignUpForm() {
 
       router.replace('/calendar')
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast({
-          variant: 'destructive',
-          title: 'Erro',
-          description: error.response?.data.message,
-        })
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Erro',
-          description: 'Não foi possível fazer o registro',
-        })
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function nextStep() {
-    if (step === 'name') {
-      const nameIsValid = await form.trigger('name')
-      if (nameIsValid) {
-        setStep('email')
-      }
-    } else if (step === 'email') {
-      const emailIsValid = await form.trigger('email')
-      if (emailIsValid) {
-        setStep('password')
-      }
-    }
-  }
-
-  function backStep() {
-    if (step === 'password') {
-      form.setValue('password', '')
-      form.setValue('confirmPassword', '')
-      setStep('email')
-    } else if (step === 'email') {
-      form.setValue('email', '')
-      setStep('name')
-    }
-  }
-
-  function handleKeyDown(event: React.KeyboardEvent<HTMLFormElement>) {
-    if (event.key === 'Enter' && (step === 'name' || step === 'email')) {
-      event.preventDefault()
-      nextStep()
+      console.error(error)
     }
   }
 
