@@ -1,0 +1,12 @@
+# URL of the API that the frontend will communicate with.
+# This should point to the backend server; "localhost:3333" indicates it's running locally on port 3333.
+NEXT_PUBLIC_API_URL=http://localhost:3333
+
+# URL for NextAuth.js authentication callbacks.
+# This should be the endpoint where NextAuth is configured, usually pointing to the app's /api/auth path.
+# "localhost:3000" indicates it's also running locally on port 3000.
+NEXTAUTH_URL=http://localhost:3000/api/auth
+
+# Secret key used by NextAuth.js to sign and encrypt tokens and session cookies.
+# Ensure this is a secure, unique value in production for security purposes.
+NEXTAUTH_SECRET=secret
