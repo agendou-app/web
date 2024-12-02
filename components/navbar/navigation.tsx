@@ -44,6 +44,12 @@ export function Navigation() {
               </DropdownMenuTrigger>
             </DropdownMenu>
           </BreadcrumbItem>
+          <BreadcrumbSeparator className="hidden sm:block">
+            <SlashIcon />
+          </BreadcrumbSeparator>
+          <BreadcrumbItem>
+            <p>Test</p>
+          </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
     </div>
