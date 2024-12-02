@@ -5,6 +5,7 @@ import './globals.css'
 import { Toaster } from '@/components/providers/toaster'
 
 import NextAuthSessionProvider from '@/components/providers/session-provider'
+import { ThemeProvider } from '@/components/providers/theme-provider'
 
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
@@ -37,17 +38,24 @@ export default async function RootLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true}
+        suppressHydrationWarning
       >
-        <NextIntlClientProvider messages={messages}>
-          <NextAuthSessionProvider>
-            <main>{children}</main>
-            <Toaster />
-          </NextAuthSessionProvider>
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextIntlClientProvider messages={messages}>
+            <NextAuthSessionProvider>
+              <main>{children}</main>
+              <Toaster />
+            </NextAuthSessionProvider>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

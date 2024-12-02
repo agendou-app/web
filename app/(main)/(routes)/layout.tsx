@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
-import { ReactNode } from 'react'
+
+import { Navbar } from '@/components/navbar'
 
 interface PrivateLayoutProps {
   children: ReactNode
@@ -13,5 +15,10 @@ export default async function PrivateLayout({ children }: PrivateLayoutProps) {
     redirect('/auth/sign-in')
   }
 
-  return <div>{children}</div>
+  return (
+    <div>
+      <Navbar />
+      {children}
+    </div>
+  )
 }
