@@ -1,5 +1,3 @@
-'use client'
-
 import { signUpFormSchema } from '@/schemas/sign-up'
 
 import { useForm } from 'react-hook-form'
@@ -27,9 +25,17 @@ import {
 import { ArrowRightIcon } from '@radix-ui/react-icons'
 import { ArrowLeft } from 'lucide-react'
 import { useSignUpSteps } from '@/hooks/use-sign-up-steps'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { signUpService } from '@/services/user/sign-up'
+import { useAuth } from '@/hooks/use-auth'
+import { AxiosError } from 'axios'
+import { useToast } from '@/hooks/use-toast'
 
 export function SignUpForm() {
+  const navigate = useNavigate()
+  const { toast } = useToast()
+  const { signIn } = useAuth()
+
   const form = useForm<zod.infer<typeof signUpFormSchema>>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
@@ -43,20 +49,30 @@ export function SignUpForm() {
   const { step, nextStep, backStep, handleKeyDown } = useSignUpSteps(form)
 
   const onSubmit = async (data: zod.infer<typeof signUpFormSchema>) => {
-    console.log(data)
-    // try {
-    //   await request('POST', '/users', data)
+    try {
+      await signUpService(data)
 
-    //   await signIn('credentials', {
-    //     email: data.email,
-    //     password: data.password,
-    //     redirect: false,
-    //   })
+      await signIn({
+        email: data.email,
+        password: data.password
+      })
 
-    //   router.replace('/calendar')
-    // } catch (error) {
-    //   console.error(error)
-    // }
+      navigate('/schedules')
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        toast({
+          title: "Erro",
+          description: err.response?.data.message,
+          variant: "destructive"
+        })
+      } else {
+        toast({
+          title: "Erro",
+          description: "Não foi possível fazer o cadastro",
+          variant: "destructive"
+        })
+      }
+    }
   }
 
   return (

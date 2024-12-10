@@ -1,6 +1,7 @@
 import { signInFormSchema } from '@/schemas/sign-in'
 
-import { useState } from 'react'
+import { useAuth } from '@/hooks/use-auth'
+import { useToast } from '@/hooks/use-toast'
 
 import { useForm } from 'react-hook-form'
 import zod from 'zod'
@@ -23,10 +24,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import { SymbolIcon } from '@radix-ui/react-icons'
 
 export function SignInForm() {
-  const [isLoading, setIsLoading] = useState(false)
+  const { toast } = useToast()
+  const navigate = useNavigate()
+  const { signIn, isLoading } = useAuth()
 
   const form = useForm<zod.infer<typeof signInFormSchema>>({
     resolver: zodResolver(signInFormSchema),
@@ -37,28 +41,16 @@ export function SignInForm() {
   })
 
   async function onSubmit(data: zod.infer<typeof signInFormSchema>) {
-    setIsLoading(true)
+    try {
+      await signIn(data)
 
-    console.log(data)
-
-    // const result = await signIn('credentials', {
-    //   email: data.email,
-    //   password: data.password,
-    //   redirect: false,
-    // })
-
-    // if (result?.error) {
-    //   toast({
-    //     variant: 'destructive',
-    //     title: 'Erro',
-    //     description: result.error,
-    //   })
-    //   setIsLoading(false)
-    //   return
-    // }
-
-    // router.replace('/calendar')
-    // setIsLoading(false)
+      navigate('/schedules')
+    } catch (err: any) {
+      toast({
+        title: err.message,
+        variant: "destructive"
+      })
+    }
   }
 
   return (
@@ -105,7 +97,7 @@ export function SignInForm() {
                 {!isLoading ? (
                   <span>Entrar</span>
                 ) : (
-                  <span>loading...</span>
+                  <SymbolIcon className="animate-spin" />
                 )}
               </Button>
             </div>

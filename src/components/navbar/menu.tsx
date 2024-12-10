@@ -25,6 +25,7 @@ import {
   MoonIcon,
   SunIcon,
 } from '@radix-ui/react-icons'
+import { useAuth } from '@/hooks/use-auth'
 
 export function Menu() {
   const [open, setOpen] = useState(false)
@@ -60,13 +61,12 @@ export function Menu() {
 }
 
 function MenuContenct() {
+  const { signOut } = useAuth()
   const { setTheme, theme } = useTheme()
   const navigate = useNavigate()
 
   function logout() {
-    // signOut({
-    //   redirect: false,
-    // })
+    signOut()
 
     navigate('/sign-in')
   }
